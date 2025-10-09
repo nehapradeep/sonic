@@ -35,11 +35,11 @@ Setup & run:
      }
 
 7. Capture traffic (on host) for evidence:
-   # Start tcpdump in client and write to mounted repo
+   #### Start tcpdump in client and write to mounted repo
    docker exec -d client bash -lc "tcpdump -i any -w /work/sonic_test_before.pcap tcp port 8080"
-   # run probe
+   #### run probe
    docker exec -it client bash -lc "source /root/venv/bin/activate && python3 /work/sonic_check.py <SONIC_IP>"
-   # stop tcpdump
+   #### stop tcpdump
    docker exec -it client bash -lc "pkill tcpdump || true"
 
    The file sonic_test_before.pcap will be in the host project folder.
