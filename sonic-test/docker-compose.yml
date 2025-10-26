@@ -1,0 +1,33 @@
+networks:
+  # Define a bridge network for the containers to communicate
+  sonic-test-net:
+    driver: bridge
+
+services:
+  # 1. The SONiC Switch Container (Device Under Test - DUT)
+  sonic-switch:
+    # Using the image we pulled
+    image: netreplica/docker-sonic-vs:20220111 
+    container_name: sonic-dut
+    hostname: sonic-dut
+    # Required for some SONiC components
+    cap_add:
+      - ALL
+    # Allocate shared memory (crucial for SONiC VS, ~half your 4GB VM RAM)
+    shm_size: '2g'
+    networks:
+      - sonic-test-net
+    restart: always
+
+  # 2. The Attack/Test Client Container
+  attack-client:
+    # Using a lightweight image with network tools
+    image: nicolaka/netshoot:latest 
+    container_name: attack-client
+    hostname: attack-client
+    tty: true 
+    networks:
+      - sonic-test-net
+    # Keep the container running for interactive access
+    command: sh -c "sleep infinity"
+    shm_size: '64m'

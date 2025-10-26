@@ -1,0 +1,13 @@
+1. Pull the image: docker pull netreplica/docker-sonic-vs:20220111
+2. from the folder where u have docker-compose.yml docker compose up -d
+3. docker exec -it attack-client sh
+4. In another tab: docker exec -it sonic-dut bash
+
+nehapradeep@MacBook-Air sonic-test % docker inspect -f '{{.Name}} - {{index .NetworkSettings.Networks "sonic_sonic-test-net" "IPAddress"}}' $(docker ps -q)
+/attack-client - 172.19.0.3
+/sonic-dut - 172.19.0.2
+
+
+
+
+
