@@ -1,0 +1,39 @@
+name: sonic-bgp-gnmi-lab
+
+topology:
+  nodes:
+    sonic-dut:
+      kind: linux
+      image: netreplica/docker-sonic-vs:20220111
+      binds:
+        - ./configs/sonic:/etc/sonic
+      mgmt_ipv4: 172.20.0.2
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - service frr start
+
+    frr-legit:
+      kind: linux
+      image: frrouting/frr:9.1
+      mgmt_ipv4: 172.20.0.3
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - service frr start
+
+    frr-rogue:
+      kind: linux
+      image: frrouting/frr:9.1
+      mgmt_ipv4: 172.20.0.4
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - service frr start
+
+    gnmi-client:
+      kind: linux
+      image: ghcr.io/openconfig/gnmic:latest
+      mgmt_ipv4: 172.20.0.5
+      cmd: sleep infinity
+
+  links:
+    - endpoints: ["sonic-dut:eth1", "frr-legit:eth1"]
+    - endpoints: ["sonic-dut:eth2", "frr-rogue:eth1"]
